@@ -17,13 +17,35 @@ export function TemplatePreview({
   return (
     <div
       aria-hidden="true"
-      className={`flex w-full items-center justify-center overflow-hidden ${
+      data-template={template.slug}
+      className={`template-preview relative isolate flex w-full items-center justify-center overflow-hidden ${
         isHero ? "rounded-2xl p-8 sm:p-14" : "rounded-xl p-6"
       }`}
-      style={{ backgroundColor: palette.bg }}
+      style={{
+        backgroundColor: palette.bg,
+        "--preview-accent": palette.accent,
+        "--preview-soft": palette.soft,
+        "--preview-panel": palette.panel,
+      } as React.CSSProperties}
     >
+      <div className="preview-atmosphere absolute inset-0" />
+      <span className="preview-orbit preview-orbit-one absolute rounded-full border" />
+      <span className="preview-orbit preview-orbit-two absolute rounded-full border" />
+      <div className="preview-particles absolute inset-0">
+        {Array.from({ length: 9 }, (_, index) => (
+          <span key={index} style={{ "--particle": index } as React.CSSProperties}>
+            {template.slug === "garden-whisper" || template.slug === "vintage-bloom"
+              ? ornament
+              : "✦"}
+          </span>
+        ))}
+      </div>
+      <div className="preview-waves absolute inset-x-0 bottom-0">
+        <span />
+        <span />
+      </div>
       <div
-        className={`flex w-full flex-col items-center text-center shadow-sm ${
+        className={`preview-card relative z-10 flex w-full flex-col items-center text-center ${
           isHero ? "max-w-md gap-4 rounded-xl px-8 py-12" : "gap-2.5 rounded-lg px-5 py-8"
         }`}
         style={{

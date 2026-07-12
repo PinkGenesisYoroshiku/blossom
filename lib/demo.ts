@@ -18,6 +18,8 @@ export type DemoContent = {
     groomsmen: string[];
   };
   dressCode: string;
+  weddingHashtag: string;
+  travel: { label: string; title: string; detail: string }[];
   faqs: { question: string; answer: string }[];
 };
 
@@ -63,6 +65,24 @@ export function getDemoContent(template: WeddingTemplate): DemoContent {
       groomsmen: ["Patrick Aquino", "Ryan Dela Cruz", "Joshua Tan"],
     },
     dressCode: `We'd love to see you in semi-formal attire in colors that complement our motif. Please avoid white — that's reserved for the bride!`,
+    weddingHashtag: `#${partnerA}And${partnerB}SayIDo`.replace(/\s/g, ""),
+    travel: [
+      {
+        label: "Getting there",
+        title: `Travel to ${area ?? ceremonyVenue}`,
+        detail: "Allow a little extra travel time for weekend traffic. Ride-hailing services and private cars can enter through the venue's main gate.",
+      },
+      {
+        label: "Where to stay",
+        title: "Nearby accommodation",
+        detail: "Partner hotels and comfortable stays are available within 10–15 minutes of the venue. Mention the wedding when making your reservation.",
+      },
+      {
+        label: "Guest comfort",
+        title: "Shuttle service",
+        detail: "A complimentary shuttle will run between the recommended hotel area, ceremony, and reception. Final pickup times will be shared with confirmed guests.",
+      },
+    ],
     faqs: [
       {
         question: "Can I bring a plus one?",

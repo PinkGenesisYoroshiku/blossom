@@ -1,10 +1,13 @@
+import Image from "next/image";
 import type { WeddingTemplate } from "@/lib/templates";
+import couplePortrait from "@/public/images/wedding-couple-hero.png";
 import { getDemoContent } from "@/lib/demo";
 import { getVariant, type DemoVariant } from "@/components/demo/variants";
 import { HeroDecorations } from "@/components/demo/decorations";
 import { Countdown } from "@/components/demo/countdown";
 import { RsvpForm } from "@/components/demo/rsvp-form";
 import { Reveal } from "@/components/demo/reveal";
+import { SnapShare } from "@/components/demo/snap-share";
 
 function SectionHeading({
   script,
@@ -68,61 +71,6 @@ function HeroNames({ template, variant }: { template: WeddingTemplate; variant: 
   );
 }
 
-function HeroFrame({
-  variant,
-  palette,
-  children,
-}: {
-  variant: DemoVariant;
-  palette: WeddingTemplate["palette"];
-  children: React.ReactNode;
-}) {
-  switch (variant.frame) {
-    case "double":
-      return (
-        <div
-          className="px-8 py-14 sm:px-16 sm:py-16"
-          style={{
-            backgroundColor: `${palette.panel}99`,
-            border: `1px solid ${palette.accent}55`,
-            outline: `1px solid ${palette.accent}2e`,
-            outlineOffset: 7,
-          }}
-        >
-          {children}
-        </div>
-      );
-    case "arch":
-      return (
-        <div
-          className="rounded-t-[10rem] rounded-b-3xl px-8 pb-14 pt-24 sm:px-16 sm:pt-28"
-          style={{
-            backgroundColor: `${palette.panel}99`,
-            border: `1px solid ${palette.accent}45`,
-          }}
-        >
-          {children}
-        </div>
-      );
-    case "ornate":
-      return (
-        <div
-          className="rounded-[3rem] p-3"
-          style={{ backgroundColor: `${palette.panel}99`, border: `2px solid ${palette.accent}50` }}
-        >
-          <div
-            className="rounded-[2.4rem] border border-dashed px-8 py-12 sm:px-14 sm:py-14"
-            style={{ borderColor: `${palette.accent}60` }}
-          >
-            {children}
-          </div>
-        </div>
-      );
-    default:
-      return <>{children}</>;
-  }
-}
-
 /**
  * A complete sample wedding invitation website rendered in the template's
  * palette and creative direction — this is what couples receive, filled in
@@ -149,12 +97,34 @@ export function InvitationDemo({ template }: { template: WeddingTemplate }) {
   });
 
   return (
-    <div style={{ backgroundColor: palette.bg, color: palette.ink }}>
+    <div
+      className="invitation-demo"
+      data-template={template.slug}
+      style={{
+        backgroundColor: palette.bg,
+        color: palette.ink,
+        "--demo-accent": palette.accent,
+        "--demo-soft": palette.soft,
+        "--demo-panel": palette.panel,
+        "--demo-ink": palette.ink,
+        "--demo-bg": palette.bg,
+      } as React.CSSProperties}
+    >
       {/* Hero */}
-      <section className="relative flex min-h-[92vh] flex-col items-center justify-center overflow-hidden px-4 py-24 text-center">
+      <section className="demo-hero relative flex min-h-[calc(100svh-3.5rem)] flex-col items-center justify-center overflow-hidden px-4 py-24 text-center">
+        <Image
+          src={couplePortrait}
+          alt={`Bride ${sampleCouple.partnerA} and groom ${sampleCouple.partnerB} together in a garden`}
+          fill
+          preload
+          placeholder="blur"
+          sizes="100vw"
+          className="demo-hero-background object-cover"
+        />
+        <div className="demo-hero-scrim" aria-hidden="true" />
         <HeroDecorations variant={variant} palette={palette} ornament={ornament} />
-        <div className="relative w-full max-w-2xl">
-          <HeroFrame variant={variant} palette={palette}>
+        <p className="demo-hero-watermark" aria-hidden="true">forever</p>
+        <div className="demo-hero-copy relative z-10 w-full max-w-3xl text-white">
             {variant.monogram && (
               <div {...enter(0)}>
                 <span className="relative mx-auto mb-8 flex size-24 items-center justify-center">
@@ -220,8 +190,11 @@ export function InvitationDemo({ template }: { template: WeddingTemplate }) {
                 RSVP Now
               </a>
             </div>
-          </HeroFrame>
         </div>
+        <a href="#story" className="demo-scroll-cue">
+          <span>Discover our story</span>
+          <i aria-hidden="true" />
+        </a>
       </section>
 
       {/* Countdown */}
@@ -244,22 +217,38 @@ export function InvitationDemo({ template }: { template: WeddingTemplate }) {
       </section>
 
       {/* Our story */}
-      <section className="mx-auto max-w-4xl px-4 py-20">
-        <SectionHeading script="every love has a story" title="Our Story" template={template} variant={variant} />
-        <div className="mt-12 grid gap-8 sm:grid-cols-3">
-          {demo.storyChapters.map((chapter, i) => (
-            <Reveal key={chapter.title} delay={i * 140}>
-              <article
-                className={`h-full px-6 py-8 text-center transition-transform duration-500 hover:-translate-y-1.5 ${variant.cardClass}`}
-                style={panelStyle}
-              >
-                <h3 className="font-serif text-xl" style={{ color: palette.accent }}>
-                  {chapter.title}
-                </h3>
-                <p className="mt-3 text-sm leading-7 opacity-85">{chapter.body}</p>
-              </article>
-            </Reveal>
-          ))}
+      <section id="story" className="story-section scroll-mt-16 px-4 py-24 sm:py-32">
+        <div className="relative mx-auto max-w-6xl">
+          <span className="story-watermark" aria-hidden="true">{ornament}</span>
+          <SectionHeading script="every love has a story" title="Our Story" template={template} variant={variant} />
+          <p className="mx-auto mt-5 max-w-xl text-center font-serif text-lg italic leading-8 opacity-70">
+            Three little chapters that brought two lives to one beautiful beginning.
+          </p>
+          <div className="story-path relative mt-16 sm:mt-20">
+            {demo.storyChapters.map((chapter, i) => (
+              <Reveal key={chapter.title} delay={i * 160} className="story-reveal">
+                <article
+                  className="story-chapter"
+                  style={{
+                    backgroundColor: `${palette.panel}e8`,
+                    borderColor: `${palette.accent}35`,
+                  }}
+                >
+                  <div className="story-index" style={{ color: palette.accent }}>
+                    <span>chapter</span>
+                    <strong>{String(i + 1).padStart(2, "0")}</strong>
+                  </div>
+                  <div className="story-copy">
+                    <p className="story-ornament" style={{ color: palette.accent }} aria-hidden="true">
+                      {ornament}
+                    </p>
+                    <h3 style={{ color: palette.accent }}>{chapter.title}</h3>
+                    <p>{chapter.body}</p>
+                  </div>
+                </article>
+              </Reveal>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -310,29 +299,39 @@ export function InvitationDemo({ template }: { template: WeddingTemplate }) {
       </section>
 
       {/* Schedule */}
-      <section className="mx-auto max-w-2xl px-4 py-20">
-        <SectionHeading script="the celebration" title="Schedule of the Day" template={template} variant={variant} />
-        <ol className="mt-12">
-          {demo.schedule.map((item, index) => (
-            <li key={item.event} className="flex gap-6">
-              <div className="flex flex-col items-center">
-                <span
-                  className="flex size-3 shrink-0 rounded-full"
-                  style={{ backgroundColor: palette.accent, marginTop: 6 }}
-                />
-                {index < demo.schedule.length - 1 && (
-                  <span className="w-px flex-1" style={{ backgroundColor: palette.soft }} />
-                )}
-              </div>
-              <Reveal delay={index * 90} className="pb-8">
-                <p className="font-serif text-lg font-semibold" style={{ color: palette.accent }}>
-                  {item.time}
-                </p>
-                <p className="mt-0.5 opacity-85">{item.event}</p>
-              </Reveal>
-            </li>
-          ))}
-        </ol>
+      <section className="schedule-section px-4 py-24 sm:py-28">
+        <div className="relative mx-auto max-w-5xl">
+          <SectionHeading script="the celebration" title="Schedule of the Day" template={template} variant={variant} />
+          <p className="mx-auto mt-5 max-w-lg text-center font-serif text-lg italic leading-8 opacity-70">
+            A beautiful day, thoughtfully planned from the first welcome to the last dance.
+          </p>
+          <ol className="schedule-timeline relative mx-auto mt-16 max-w-4xl">
+            {demo.schedule.map((item, index) => (
+              <li key={item.event} className="schedule-item relative">
+                <Reveal delay={index * 100} className="schedule-reveal">
+                  <article
+                    className="schedule-card"
+                    style={{
+                      backgroundColor: `${palette.panel}e8`,
+                      borderColor: `${palette.accent}30`,
+                    }}
+                  >
+                    <span className="schedule-number" style={{ color: palette.accent }}>
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <div>
+                      <p className="schedule-time" style={{ color: palette.accent }}>
+                        {item.time}
+                      </p>
+                      <h3 className="schedule-event">{item.event}</h3>
+                    </div>
+                  </article>
+                </Reveal>
+                <span className="schedule-marker" style={{ backgroundColor: palette.accent }} />
+              </li>
+            ))}
+          </ol>
+        </div>
       </section>
 
       {/* Entourage */}
@@ -423,6 +422,81 @@ export function InvitationDemo({ template }: { template: WeddingTemplate }) {
               </li>
             ))}
           </ul>
+        </div>
+      </section>
+
+      {/* Snap & Share */}
+      <section className="snap-share-section px-4 py-24">
+        <div className="mx-auto grid max-w-5xl items-center gap-12 lg:grid-cols-[1.05fr_.95fr]">
+          <Reveal className="snap-collage">
+            {["top-left", "top-right", "bottom-left", "bottom-right"].map((position, index) => (
+              <div
+                key={position}
+                className={`snap-photo snap-photo-${position}`}
+                style={{ background: `linear-gradient(${125 + index * 35}deg, ${palette.soft}, ${palette.bg})`, borderColor: `${palette.panel}cc`, color: palette.accent }}
+              >
+                <span>{index % 2 === 0 ? ornament : "♡"}</span>
+              </div>
+            ))}
+            <div className="snap-camera" style={{ backgroundColor: palette.accent, color: palette.panel }} aria-hidden="true">◉</div>
+          </Reveal>
+          <div className="text-center lg:text-left">
+            <SectionHeading script="capture the love" title="Snap & Share" template={template} variant={variant} />
+            <Reveal delay={120}>
+              <p className="mt-6 font-serif text-lg leading-8 opacity-80">
+                Help us see the celebration through your eyes. Share your favorite moments using our wedding hashtag.
+              </p>
+              <div className="mt-7 flex justify-center lg:justify-start">
+                <SnapShare hashtag={demo.weddingHashtag} accent={palette.accent} />
+              </div>
+            </Reveal>
+          </div>
+        </div>
+      </section>
+
+      {/* Travel & accommodation */}
+      <section className="travel-section px-4 py-24" style={{ backgroundColor: palette.panel }}>
+        <div className="mx-auto max-w-5xl">
+          <SectionHeading script="plan your stay" title="Travel & Accommodation" template={template} variant={variant} />
+          <p className="mx-auto mt-5 max-w-xl text-center font-serif text-lg italic leading-8 opacity-70">
+            Everything you need for a comfortable journey and an easy celebration.
+          </p>
+          <div className="mt-12 grid gap-5 md:grid-cols-3">
+            {demo.travel.map((item, index) => (
+              <Reveal key={item.label} delay={index * 120}>
+                <article className="travel-card" style={{ backgroundColor: palette.bg, borderColor: `${palette.accent}2e` }}>
+                  <span className="travel-icon" style={{ color: palette.accent }} aria-hidden="true">{index === 0 ? "↗" : index === 1 ? "⌂" : "◇"}</span>
+                  <p style={{ color: palette.accent }}>{item.label}</p>
+                  <h3>{item.title}</h3>
+                  <p>{item.detail}</p>
+                </article>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Gifts */}
+      <section className="gifts-section px-4 py-24">
+        <div className="mx-auto max-w-4xl text-center">
+          <SectionHeading script="with grateful hearts" title="Gifts" template={template} variant={variant} />
+          <Reveal delay={100}>
+            <p className="mx-auto mt-6 max-w-2xl font-serif text-lg leading-8 opacity-80">
+              Your presence at our celebration is the greatest gift of all. If you wish to honor us with something more, a contribution toward our new chapter would be warmly appreciated.
+            </p>
+            <div className="gift-options mt-10 grid gap-5 sm:grid-cols-2">
+              <div style={{ backgroundColor: `${palette.panel}df`, borderColor: `${palette.accent}32` }}>
+                <span style={{ color: palette.accent }} aria-hidden="true">♡</span>
+                <h3>Wedding envelope</h3>
+                <p>A traditional envelope may be shared with us during the reception.</p>
+              </div>
+              <div style={{ backgroundColor: `${palette.panel}df`, borderColor: `${palette.accent}32` }}>
+                <span style={{ color: palette.accent }} aria-hidden="true">⌂</span>
+                <h3>Our future home</h3>
+                <p>Secure digital contribution details are provided privately to invited guests.</p>
+              </div>
+            </div>
+          </Reveal>
         </div>
       </section>
 

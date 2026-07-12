@@ -181,6 +181,30 @@ function Waves({ color }: { color: string }) {
   );
 }
 
+function InvitationCorners({
+  color,
+  ornament,
+}: {
+  color: string;
+  ornament: string;
+}) {
+  return (
+    <div aria-hidden="true" className="invitation-corners pointer-events-none absolute inset-0">
+      {["top-left", "top-right", "bottom-left", "bottom-right"].map((position, index) => (
+        <div
+          key={position}
+          className={`invitation-corner invitation-corner-${position} motion-decor absolute`}
+          style={{ color, animationDelay: `${index * -1.4}s` }}
+        >
+          <span className="invitation-corner-line" />
+          <span className="invitation-corner-glyph">{ornament}</span>
+          <span className="invitation-corner-dot" />
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export function HeroDecorations({
   variant,
   palette,
@@ -192,6 +216,7 @@ export function HeroDecorations({
 }) {
   return (
     <>
+      <InvitationCorners color={palette.accent} ornament={ornament} />
       {variant.particles === "sparkles" && <TwinklingGlyphs glyph="✦" color={palette.accent} />}
       {variant.particles === "leaves" && <FallingGlyphs glyph={ornament} color={palette.accent} />}
       {variant.particles === "petals" && <FallingGlyphs glyph={ornament} color={palette.accent} />}

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTemplate, templates } from "@/lib/templates";
 import { InvitationDemo } from "@/components/demo/invitation-demo";
+import { PreviewExperience } from "@/components/demo/preview-experience";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -54,9 +55,16 @@ export default async function PreviewPage({ params }: Props) {
           </div>
         </div>
       </div>
-      <main>
-        <InvitationDemo template={template} />
-      </main>
+      <PreviewExperience
+        couple={`${template.sampleCouple.partnerA} & ${template.sampleCouple.partnerB}`}
+        date={template.sampleCouple.date}
+        ornament={template.ornament}
+        palette={template.palette}
+      >
+        <main>
+          <InvitationDemo template={template} />
+        </main>
+      </PreviewExperience>
     </>
   );
 }
