@@ -110,12 +110,6 @@ export default function Home() {
             >
               Message Us
             </Link>
-            <Link
-              href="/wedding"
-              className="rounded-full bg-white/70 px-8 py-3.5 text-sm font-medium uppercase tracking-widest text-rosewood shadow-sm ring-1 ring-petal transition hover:bg-white hover:shadow-md"
-            >
-              A Little Surprise ✨
-            </Link>
           </div>
           <ul className="mt-12 flex flex-wrap items-center justify-center gap-x-8 gap-y-2 text-sm uppercase tracking-[0.2em] text-ink/60">
             <li>Online RSVP</li>
